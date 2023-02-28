@@ -110,18 +110,25 @@ Widget interfaceScreen(state, BuildContext context) {
                                         .launchLink(receivedData[index].link);
                               },
                               itemBuilder: (context) {
-                                return [
-                                  PopupMenuItem(
-                                      value: 'Fetch Data',
-                                      child: state is GitApiUser
-                                          ? const Text('Repositories')
-                                          : state is GitApiRepositories
-                                              ? const Text('Commits')
-                                              : const Text(
-                                                  'Back to Repositories')),
-                                  const PopupMenuItem(
-                                      value: 'WebSite', child: Text('WebSite')),
-                                ];
+                                return state is GitApiCommits
+                                    ? [
+                                        const PopupMenuItem(
+                                            value: 'WebSite',
+                                            child: Text('WebSite')),
+                                      ]
+                                    : [
+                                        PopupMenuItem(
+                                            value: 'Fetch Data',
+                                            child: state is GitApiUser
+                                                ? const Text('Repositories')
+                                                : state is GitApiRepositories
+                                                    ? const Text('Commits')
+                                                    : const Text(
+                                                        'Back to Repositories')),
+                                        const PopupMenuItem(
+                                            value: 'WebSite',
+                                            child: Text('WebSite')),
+                                      ];
                               },
                             ),
                           ),

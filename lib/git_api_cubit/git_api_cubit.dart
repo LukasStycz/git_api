@@ -26,8 +26,7 @@ class GitApiCubit extends Cubit<GitApiState> {
       final response = await http.get(uri);
       final responseBody = response.body;
       if (response.statusCode == 200) {
-        if ((receivedData is List<User> || receivedData is List<Commits>) &&
-            fromButton == false) {
+        if (receivedData is List<User> && fromButton == false) {
           Iterable l = json.decode(response.body);
           receivedData = List<Repositories>.from(l.map((model) {
             return Repositories.fromJson(model);
