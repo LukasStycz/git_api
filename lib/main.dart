@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:git_api/git_api_cubit/git_api_cubit.dart';
+import 'package:git_api/cubits/user_cubit/user_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:git_api/pages/home_page.dart';
 
-
-void main(){
+void main() {
   runApp(const MyApp());
 }
 
@@ -13,11 +12,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return   MaterialApp(
+    return MaterialApp(
       theme: ThemeData.dark(),
-      home: BlocProvider(
-        create: (context) => GitApiCubit(),
-       child: const HomePage(),
+      home: BlocProvider<UserCubit>(
+        create: (context) => UserCubit(),
+        child: HomePage(),
       ),
     );
   }
