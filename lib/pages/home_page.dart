@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:git_api/git_api_cubit/git_api_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:git_api/models/const_objects.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -18,9 +19,11 @@ class HomePage extends StatelessWidget {
 
 Widget interfaceScreen(state, BuildContext context) {
   final List<dynamic> receivedData = state.receivedData;
+  final bool errorMessageNeed = state.errorMessageNeed;
   final TextEditingController userName = TextEditingController();
   final bool repositoriesOrCommits =
       state is GitApiRepositories || state is GitApiCommits;
+
   return Scaffold(
     appBar: state is GitApiLoading
         ? null
@@ -32,14 +35,19 @@ Widget interfaceScreen(state, BuildContext context) {
                     foregroundColor: Colors.white,
                     child: const Icon(Icons.arrow_back),
                     onPressed: () {
-                      context.read<GitApiCubit>().fetchData('', false);
+                      state is GitApiRepositories
+                          ? context.read<GitApiCubit>().backToInitialPage(
+                              ConstObjects.errorMessageNotNeeded)
+                          : context
+                              .read<GitApiCubit>()
+                              .backToRepositoriesPage();
                     })
                 : null,
-            title: state is GitApiRepositories
+            title:  Center(child: state is GitApiRepositories
                 ? const Text('Repositories')
                 : state is GitApiCommits
                     ? const Text('Commits')
-                    : const Text('Find User'),
+                    : const Text('Find User')),
           ),
     body: state is GitApiLoading
         ? const Center(
@@ -74,8 +82,9 @@ Widget interfaceScreen(state, BuildContext context) {
                           child: ElevatedButton(
                             onPressed: () {
                               context.read<GitApiCubit>().fetchData(
-                                  'https://api.github.com/users/${userName.text}',
-                                  true);
+                                    'https://api.github.com/users/${userName.text}',
+                                    ConstObjects.isElevatedButton,
+                                  );
                             },
                             child: const Padding(
                               padding: EdgeInsets.only(top: 12, bottom: 12),
@@ -83,56 +92,76 @@ Widget interfaceScreen(state, BuildContext context) {
                             ),
                           ),
                         ),
-                  state is GitApiInitial
-                      ? const SizedBox(
-                          height: 1,
-                        )
-                      : Padding(
-                          padding:
-                              const EdgeInsets.only(left: 8, top: 20, right: 8),
+                  errorMessageNeed
+                      ? const Padding(
+                          padding: EdgeInsets.only(left: 8, top: 20, right: 8),
                           child: ListTile(
-                            shape: const RoundedRectangleBorder(
+                            shape: RoundedRectangleBorder(
                               side: BorderSide(color: Colors.white, width: 2),
                               borderRadius:
                                   BorderRadius.all(Radius.circular(10)),
                             ),
-                            title: Text(receivedData[index].name),
-                            subtitle: Text(state is GitApiUser
-                                ? 'Public Repositories ${receivedData[index].publicRepositories}'
-                                : 'Created at: ${receivedData[index].date}'),
-                            trailing: PopupMenuButton(
-                              onSelected: (value) {
-                                value == 'Fetch Data'
-                                    ? context.read<GitApiCubit>().fetchData(
-                                        receivedData[index].url, false)
-                                    : context
-                                        .read<GitApiCubit>()
-                                        .launchLink(receivedData[index].link);
-                              },
-                              itemBuilder: (context) {
-                                return state is GitApiCommits
-                                    ? [
-                                        const PopupMenuItem(
-                                            value: 'WebSite',
-                                            child: Text('WebSite')),
-                                      ]
-                                    : [
-                                        PopupMenuItem(
-                                            value: 'Fetch Data',
-                                            child: state is GitApiUser
-                                                ? const Text('Repositories')
-                                                : state is GitApiRepositories
-                                                    ? const Text('Commits')
-                                                    : const Text(
-                                                        'Back to Repositories')),
-                                        const PopupMenuItem(
-                                            value: 'WebSite',
-                                            child: Text('WebSite')),
-                                      ];
-                              },
+                            title: Text(
+                              'Failed to Load Data',
+                              style: TextStyle(color: Colors.white),
                             ),
+                            tileColor: Colors.red,
                           ),
                         )
+                      : state is GitApiInitial
+                          ? const SizedBox(
+                              height: 1,
+                            )
+                          : Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 8, top: 20, right: 8),
+                              child: ListTile(
+                                shape: const RoundedRectangleBorder(
+                                  side:
+                                      BorderSide(color: Colors.white, width: 2),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                ),
+                                title: Text(receivedData[index].name),
+                                subtitle: Text(state is GitApiUser
+                                    ? 'Public Repositories ${receivedData[index].publicRepositories}'
+                                    : 'Created at: ${receivedData[index].date}'),
+                                trailing: PopupMenuButton(
+                                  onSelected: (value) {
+                                    value == 'Fetch Data'
+                                        ? context.read<GitApiCubit>().fetchData(
+                                            receivedData[index].url,
+                                            ConstObjects.isNotElevatedButton)
+                                        : context
+                                            .read<GitApiCubit>()
+                                            .launchLink(
+                                                receivedData[index].link);
+                                  },
+                                  itemBuilder: (context) {
+                                    return state is GitApiCommits
+                                        ? [
+                                            const PopupMenuItem(
+                                                value: 'WebSite',
+                                                child: Text('WebSite')),
+                                          ]
+                                        : [
+                                            PopupMenuItem(
+                                                value: 'Fetch Data',
+                                                child: state is GitApiUser
+                                                    ? const Text('Repositories')
+                                                    : state
+                                                            is GitApiRepositories
+                                                        ? const Text('Commits')
+                                                        : const Text(
+                                                            'Back to Repositories')),
+                                            const PopupMenuItem(
+                                                value: 'WebSite',
+                                                child: Text('WebSite')),
+                                          ];
+                                  },
+                                ),
+                              ),
+                            )
                 ],
               );
             }),
