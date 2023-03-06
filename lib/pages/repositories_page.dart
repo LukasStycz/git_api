@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:git_api/cubits/repositories_cubit/repositories_cubit.dart';
 import 'package:git_api/models/const_objects.dart';
-import 'package:git_api/models/repositories.dart';
+import 'package:git_api/models/strings.dart';
+import 'package:git_api/widgets/error_message.dart';
+import 'package:git_api/widgets/repositories_view.dart';
 
 class RepositoriesPage extends StatelessWidget {
   final String url;
@@ -14,7 +16,7 @@ class RepositoriesPage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: const Center(
-            child: Text(ConstObjects.repositoriesPageTitle),
+            child: Text(AppStrings.repositoriesPageTitle),
           ),
         ),
         body: BlocBuilder<RepositoriesCubit, RepositoriesState>(builder: (
@@ -22,49 +24,14 @@ class RepositoriesPage extends StatelessWidget {
           RepositoriesState state,
         ) {
           return state is RepositoriesLoaded
-              ? showRepositories(state.receivedRepositories, context)
+              ? RepositoriesView(state.receivedRepositories)
               : state is RepositoriesLoading
                   ? ConstObjects.circularProgressIndicator
                   : state is RepositoriesError
-                      ? ConstObjects.errorMessage
+                      ? const ErrorMessage()
                       : ConstObjects.sizedBoxMicro;
         }),
       ),
     );
-  }
-
-  Widget showRepositories(
-      List<Repositories> receivedRepositories, BuildContext context) {
-    return ListView.builder(
-        itemCount: receivedRepositories.length,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: ConstObjects.paddingLeftRightTop,
-            child: ListTile(
-              shape: ConstObjects.dataDisplayBorder,
-              title: Text(receivedRepositories[index].name),
-              subtitle: Text(
-                  '${ConstObjects.repositoriesAndCommitsDisplaySubtitle} ${receivedRepositories[index].date}'),
-              trailing: PopupMenuButton(
-                onSelected: (value) {
-                  value == ConstObjects.commitsPageTitle
-                      ? context.read<RepositoriesCubit>().navigateToCommitsPage(
-                          receivedRepositories[index].url, context)
-                      : context
-                          .read<RepositoriesCubit>()
-                          .launchLink(receivedRepositories[index].link);
-                },
-                itemBuilder: (context) {
-                  return [
-                    const PopupMenuItem(
-                        value: ConstObjects.commitsPageTitle,
-                        child: Text(ConstObjects.commitsPageTitle)),
-                    ConstObjects.webSitePopupMenuItem,
-                  ];
-                },
-              ),
-            ),
-          );
-        });
   }
 }

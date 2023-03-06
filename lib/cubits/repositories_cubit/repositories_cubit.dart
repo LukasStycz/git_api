@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:git_api/models/const_objects.dart';
 import 'package:git_api/models/repositories.dart';
-import 'package:git_api/pages/commits_page.dart';
+import 'package:git_api/models/strings.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 part 'repositories_state.dart';
@@ -21,9 +21,9 @@ class RepositoriesCubit extends Cubit<RepositoriesState> {
     final response = await http.get(uri);
     final responseBody = response.body;
     if (response.statusCode == 200) {
-      Iterable l = json.decode(responseBody);
+    final  Iterable decoded = json.decode(responseBody);
       List<Repositories> receivedRepositories =
-          List<Repositories>.from(l.map((model) {
+          List<Repositories>.from(decoded.map((model) {
         return Repositories.fromJson(model);
       }));
       emit(RepositoriesLoaded(receivedRepositories));
@@ -31,17 +31,10 @@ class RepositoriesCubit extends Cubit<RepositoriesState> {
       emit(const RepositoriesError());
     }
   }
-
   Future<void> launchLink(String link) async {
     final uri = Uri.parse(link);
     if (!await launchUrl(uri)) {
-      throw Exception('${ConstObjects.exception} $uri');
+      throw Exception('${AppStrings.exception} $uri');
     }
-  }
-
-  void navigateToCommitsPage(String userName, BuildContext context) {
-    final route =
-        MaterialPageRoute(builder: (context) => CommitsPage(userName));
-    Navigator.push(context, route);
   }
 }
