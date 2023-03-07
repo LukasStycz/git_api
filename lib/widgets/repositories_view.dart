@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:git_api/cubits/repositories_cubit/repositories_cubit.dart';
+import 'package:git_api/global_methods/url_utils.dart';
 import 'package:git_api/models/const_objects.dart';
 import 'package:git_api/models/repositories.dart';
 import 'package:git_api/models/strings.dart';
 import 'package:git_api/pages/commits_page.dart';
 
 class RepositoriesView extends StatelessWidget {
-  const RepositoriesView(this.receivedRepositories,{Key? key}) : super(key: key);
-final  List<Repositories> receivedRepositories;
+  const RepositoriesView(this.receivedRepositories, {Key? key})
+      : super(key: key);
+  final List<Repositories> receivedRepositories;
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -24,10 +24,12 @@ final  List<Repositories> receivedRepositories;
               trailing: PopupMenuButton(
                 onSelected: (value) {
                   value == AppStrings.commitsPageTitle
-                      ? _navigateToCommitsPage(receivedRepositories[index].url, context,)
-                      : context
-                      .read<RepositoriesCubit>()
-                      .launchLink(receivedRepositories[index].link,);
+                      ? _navigateToCommitsPage(
+                          receivedRepositories[index].url,
+                          context,
+                        )
+                      : UrlUtils.launchLink(
+                          receivedRepositories[index].link);
                 },
                 itemBuilder: (context) {
                   return [
@@ -42,9 +44,10 @@ final  List<Repositories> receivedRepositories;
           );
         });
   }
+
   void _navigateToCommitsPage(String userName, BuildContext context) {
     final route =
-    MaterialPageRoute(builder: (context) => CommitsPage(userName));
+        MaterialPageRoute(builder: (context) => CommitsPage(userName));
     Navigator.push(context, route);
   }
 }

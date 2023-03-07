@@ -1,6 +1,6 @@
-abstract class AppStrings{
+abstract class AppStrings {
   static const String errorMessageText = 'Failed to Load Data';
-  static const String userErrorMessageText ='User Not Found';
+  static const String userErrorMessageText = 'User Not Found';
   static const String webSide = 'WebSite';
   static const String findUserButtonName = 'Find User';
   static const String findUserTextFieldHintText = 'Write User Name';

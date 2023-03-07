@@ -3,8 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:git_api/cubits/user_cubit/user_cubit.dart';
 import 'package:git_api/models/const_objects.dart';
 import 'package:git_api/models/strings.dart';
+
 class ConfirmUserNameElevatedButton extends StatelessWidget {
-  const ConfirmUserNameElevatedButton(this.userName,{Key? key}) : super(key: key);
+  const ConfirmUserNameElevatedButton(this.userName, {Key? key})
+      : super(key: key);
   final TextEditingController userName;
   @override
   Widget build(BuildContext context) {

@@ -3,6 +3,7 @@ import 'package:git_api/models/colors.dart';
 import 'package:git_api/models/const_objects.dart';
 import 'package:git_api/models/dimens_dart.dart';
 import 'package:git_api/models/strings.dart';
+
 class UserErrorMessage extends StatelessWidget {
   const UserErrorMessage({Key? key}) : super(key: key);
 

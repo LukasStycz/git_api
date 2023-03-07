@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:git_api/cubits/user_cubit/user_cubit.dart';
+import 'package:git_api/global_methods/url_utils.dart';
 import 'package:git_api/models/const_objects.dart';
 import 'package:git_api/models/strings.dart';
 import 'package:git_api/models/user.dart';
 import 'package:git_api/pages/repositories_page.dart';
 
 class UserView extends StatelessWidget {
-  const UserView(this.receivedUser,{Key? key}) : super(key: key);
-final User receivedUser;
+  const UserView(this.receivedUser, {Key? key}) : super(key: key);
+  final User receivedUser;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -22,7 +21,7 @@ final User receivedUser;
             onSelected: (value) {
               value == AppStrings.repositoriesPageTitle
                   ? _navigateToReposPage(receivedUser.url, context)
-                  : context.read<UserCubit>().launchLink(receivedUser.link);
+                  : UrlUtils.launchLink(receivedUser.link);
             },
             itemBuilder: (context) {
               return [
@@ -35,9 +34,10 @@ final User receivedUser;
           )),
     );
   }
+
   void _navigateToReposPage(String userName, BuildContext context) {
     final route =
-    MaterialPageRoute(builder: (context) => RepositoriesPage(userName));
+        MaterialPageRoute(builder: (context) => RepositoriesPage(userName));
     Navigator.push(context, route);
   }
 }
