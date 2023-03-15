@@ -1,19 +1,20 @@
 import 'dart:convert';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:git_api/models/repositories.dart';
 import 'package:http/http.dart' as http;
 part 'repositories_state.dart';
+part 'repositories_cubit.freezed.dart';
 
 class RepositoriesCubit extends Cubit<RepositoriesState> {
   final String url;
-  RepositoriesCubit(this.url) : super(const RepositoriesInitial()) {
+  RepositoriesCubit(this.url) : super(const RepositoriesState.initial()) {
     fetchRepositories(url);
   }
 
   Future<void> fetchRepositories(String url) async {
-    emit(const RepositoriesLoading());
+    emit(const RepositoriesState.loading());
     final uri = Uri.parse(url);
     final response = await http.get(uri);
     final responseBody = response.body;
@@ -23,9 +24,9 @@ class RepositoriesCubit extends Cubit<RepositoriesState> {
           List<Repositories>.from(decoded.map((model) {
         return Repositories.fromJson(model);
       }));
-      emit(RepositoriesLoaded(receivedRepositories));
+      emit(RepositoriesState.loaded(receivedRepositories));
     } else {
-      emit(const RepositoriesError());
+      emit(const RepositoriesState.error());
     }
   }
 }
