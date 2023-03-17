@@ -1,4 +1,3 @@
-
 import 'package:git_api/models/strings.dart';
 import 'package:url_launcher/url_launcher.dart';
 

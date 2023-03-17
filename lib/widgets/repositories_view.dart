@@ -28,8 +28,7 @@ class RepositoriesView extends StatelessWidget {
                           receivedRepositories[index].url,
                           context,
                         )
-                      : UrlUtils.launchLink(
-                          receivedRepositories[index].link);
+                      : UrlUtils.launchLink(receivedRepositories[index].link);
                 },
                 itemBuilder: (context) {
                   return [

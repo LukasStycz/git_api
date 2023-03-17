@@ -23,13 +23,13 @@ class RepositoriesPage extends StatelessWidget {
           BuildContext context,
           RepositoriesState state,
         ) {
-          return state is RepositoriesLoaded
-              ? RepositoriesView(state.receivedRepositories)
-              : state is RepositoriesLoading
-                  ? ConstObjects.circularProgressIndicator
-                  : state is RepositoriesError
-                      ? const ErrorMessage()
-                      : ConstObjects.sizedBoxMicro;
+          return state.map(
+            initial: (initialState) => ConstObjects.sizedBoxMicro,
+            loaded: (loadedState) =>
+                RepositoriesView(loadedState.receivedRepositories),
+            loading: (loadingState) => ConstObjects.circularProgressIndicator,
+            error: (errorState) => const ErrorMessage(),
+          );
         }),
       ),
     );

@@ -28,13 +28,12 @@ class HomePage extends StatelessWidget {
             BuildContext context,
             UserState state,
           ) {
-            return state is UserLoaded
-                ? UserView(state.receivedUser)
-                : state is UserLoading
-                    ? ConstObjects.circularProgressIndicator
-                    : state is UserError
-                        ? const UserErrorMessage()
-                        : ConstObjects.sizedBoxMicro;
+            return state.map(
+              initial: (initialState) => ConstObjects.sizedBoxMicro,
+              loaded: (loadedState) => UserView(loadedState.receivedUser),
+              loading: (loadingState) => ConstObjects.circularProgressIndicator,
+              error: (errorState) => const UserErrorMessage(),
+            );
           })
         ],
       ),

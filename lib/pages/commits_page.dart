@@ -24,13 +24,12 @@ class CommitsPage extends StatelessWidget {
           BuildContext context,
           CommitsState state,
         ) {
-          return state is CommitsLoaded
-              ? CommitsView(state.receivedCommits)
-              : state is CommitsLoading
-                  ? ConstObjects.circularProgressIndicator
-                  : state is CommitsError
-                      ? const ErrorMessage()
-                      : ConstObjects.sizedBoxMicro;
+          return state.map(
+            initial: (initialState) => ConstObjects.sizedBoxMicro,
+            loaded: (loadedState) => CommitsView(loadedState.receivedCommits),
+            loading: (loadingState) => ConstObjects.circularProgressIndicator,
+            error: (errorState) => const ErrorMessage(),
+          );
         }),
       ),
     );
